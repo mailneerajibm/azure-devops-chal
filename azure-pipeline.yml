@@ -5,7 +5,7 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  azureSubscription: 'Azure subscription 1'
+  azureSubscription: 'azuredevops'
   resourceGroupName: 'azure-devops-rg'
   storageAccountName: 'azuredevopsneerajsa'
   cdnProfileName: 'azure-devops-cdn'
