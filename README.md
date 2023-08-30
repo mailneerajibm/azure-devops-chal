@@ -1,1 +1,1 @@
-# azure-devops-chal
+# azure-devops-challenge

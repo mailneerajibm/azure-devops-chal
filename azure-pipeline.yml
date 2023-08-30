@@ -1,0 +1,36 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  azureSubscription: 'Azure subscription 1'
+  resourceGroupName: 'azure-devops-rg'
+  storageAccountName: 'azuredevopsneerajsa'
+  cdnProfileName: 'azure-devops-cdn'
+
+stages:
+- stage: 'DeployInfrastructure'
+  jobs:
+  - job: 'Deploy'
+    steps:
+    - checkout: self
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: $(azureSubscription)
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          az deployment group create --resource-group $(resourceGroupName) --template-file ./main.bicep --parameters storageAccountName=$(storageAccountName)
+
+- stage: 'RunTests'
+  jobs:
+  - job: 'RunPesterTests'
+    steps:
+    - checkout: self
+    - powershell: Install-Module -Name Pester -Force -SkipPublisherCheck
+      displayName: 'Install Pester'
+    - powershell: |
+        .\Infrastructure.Tests.ps1 -resourceGroupName $(resourceGroupName) -storageAccountName $(storageAccountName) -cdnProfileName $(cdnProfileName)
+      displayName: 'Run Pester Tests'
