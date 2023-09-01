@@ -51,20 +51,21 @@ stages:
   jobs:
   - job: 'RunPesterTests'
     steps:
+    - powershell: |
+        Write-Output "APP_ID: $env:APP_ID"
+        Write-Output "SECRET: $env:SECRET"
+        Write-Output "TENANT_ID: $env:TENANT_ID"
+      displayName: 'Print Environment Variables'
+
     - checkout: self
     - powershell: Install-Module -Name Pester -Force -SkipPublisherCheck
       displayName: 'Install Pester'
     - powershell: Install-Module -Name Az -AllowClobber -Force -SkipPublisherCheck
       displayName: 'Install Azure PowerShell Module'
     - powershell: |
-        Write-Output "APP_ID: $env:APP_ID"
-        Write-Output "SECRET: $env:SECRET"
-        Write-Output "TENANT_ID: $env:TENANT_ID"
-    
-        # Convert secret variable to secure string
         $secureSecret = ConvertTo-SecureString -String $env:SECRET -AsPlainText -Force
-    
-        Connect-AzAccount -ServicePrincipal -Credential (New-Object PSCredential -ArgumentList $env:APP_ID, $secureSecret) -Tenant $env:TENANT_ID
+        $psCredential = New-Object PSCredential -ArgumentList $env:APP_ID, $secureSecret
+        Connect-AzAccount -ServicePrincipal -Credential $psCredential -Tenant $env:TENANT_ID
       displayName: 'Connect to Azure Account'   
     - powershell: |
         .\infra-tests\Infrastructure.Test.ps1 -resourceGroupName $(resourceGroupName) -storageAccountName $(storageAccountName) -cdnProfileName $(cdnProfileName)
