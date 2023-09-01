@@ -9,6 +9,7 @@ variables:
   resourceGroupName: 'azure-devops-rg'
   storageAccountName: 'azuredevopsneerajsa'
   cdnProfileName: 'azure-devops-cdn'
+  containerName: 'website'  # this variable for the container name
 
 stages:
 - stage: 'DeployInfrastructure'
@@ -24,18 +25,20 @@ stages:
         inlineScript: |
           az deployment group create --resource-group $(resourceGroupName) --template-file ./azure-static-website/main.bicep --parameters storageAccountName=$(storageAccountName)
 
-# Add this stage to deploy your static website content
 - stage: 'DeployWebsite'
   jobs:
   - job: 'DeployWebsite'
     steps:
-    - task: AzureFileCopy@4
+    - task: AzureCLI@2
       inputs:
-        sourcePath: './website'
         azureSubscription: $(azureSubscription)
-        destination: 'AzureBlob'
-        storage: $(storageAccountName)
-        containerName: 'website'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          az storage blob upload-batch \
+            --destination $(containerName) \
+            --source ./website \
+            --account-name $(storageAccountName)
 
 - stage: 'RunTests'
   jobs:
