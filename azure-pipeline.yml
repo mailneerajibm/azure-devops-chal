@@ -5,6 +5,9 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
+  APP_ID: $(APP_ID)
+  SECRET: $(SECRET)
+  TENANT_ID: $(TENANT_ID)
   azureSubscription: 'azuredevops'
   resourceGroupName: 'azure-devops-rg'
   storageAccountName: 'azuredevopsneerajsa'
