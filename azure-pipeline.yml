@@ -24,6 +24,19 @@ stages:
         inlineScript: |
           az deployment group create --resource-group $(resourceGroupName) --template-file ./azure-static-website/main.bicep --parameters storageAccountName=$(storageAccountName)
 
+# Add this stage to deploy your static website content
+- stage: 'DeployWebsite'
+  jobs:
+  - job: 'DeployWebsite'
+    steps:
+    - task: AzureFileCopy@4
+      inputs:
+        sourcePath: './website'
+        azureSubscription: $(azureSubscription)
+        destination: 'AzureBlob'
+        storage: $(storageAccountName)
+        containerName: 'website'
+
 - stage: 'RunTests'
   jobs:
   - job: 'RunPesterTests'
