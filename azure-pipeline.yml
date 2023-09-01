@@ -53,6 +53,8 @@ stages:
       displayName: 'Install Pester'
     - powershell: Install-Module -Name Az -AllowClobber -Force -SkipPublisherCheck
       displayName: 'Install Azure PowerShell Module'
+    - powershell: Connect-AzAccount -ServicePrincipal -Credential (New-Object PSCredential -ArgumentList $env:APP_ID, (ConvertTo-SecureString $env:SECRET -AsPlainText -Force)) -Tenant $env:TENANT_ID
+      displayName: 'Connect to Azure Account'   
     - powershell: |
-        .\infra-tests\Infrastructure.Test.ps1 -resourceGroupName $(resourceGroupName) -storageAccountName $(storageAccountName) -cdnProfileName $(cdnProfileName) -appId ${env:APP_ID} -secret ${env:SECRET} -tenantId ${env:TENANT_ID}
+        .\infra-tests\Infrastructure.Test.ps1 -resourceGroupName $(resourceGroupName) -storageAccountName $(storageAccountName) -cdnProfileName $(cdnProfileName)
       displayName: 'Run Pester Tests'
