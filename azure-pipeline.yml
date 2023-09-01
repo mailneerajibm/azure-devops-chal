@@ -51,6 +51,8 @@ stages:
     - checkout: self
     - powershell: Install-Module -Name Pester -Force -SkipPublisherCheck
       displayName: 'Install Pester'
+    - powershell: Install-Module -Name Az -AllowClobber -Force -SkipPublisherCheck
+      displayName: 'Install Azure PowerShell Module'  
     - powershell: |
         .\infra-tests\Infrastructure.Test.ps1 -resourceGroupName $(resourceGroupName) -storageAccountName $(storageAccountName) -cdnProfileName $(cdnProfileName)
       displayName: 'Run Pester Tests'
