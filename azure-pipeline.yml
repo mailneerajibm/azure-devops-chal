@@ -22,7 +22,7 @@ stages:
         scriptType: 'bash'
         scriptLocation: 'inlineScript'
         inlineScript: |
-          az deployment group create --resource-group $(resourceGroupName) --template-file ./main.bicep --parameters storageAccountName=$(storageAccountName)
+          az deployment group create --resource-group $(resourceGroupName) --template-file ./azure-static-website/main.bicep --parameters storageAccountName=$(storageAccountName)
 
 - stage: 'RunTests'
   jobs:
