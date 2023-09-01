@@ -48,9 +48,9 @@ stages:
   jobs:
   - job: 'RunPesterTests'
     env:
-    APP_ID: $(APP_ID)
-    SECRET: $(SECRET)
-    TENANT_ID: $(TENANT_ID)
+      APP_ID: $(APP_ID)
+      SECRET: $(SECRET)
+      TENANT_ID: $(TENANT_ID)
     steps:
     - checkout: self
     - powershell: Install-Module -Name Pester -Force -SkipPublisherCheck
