@@ -5,9 +5,6 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  APP_ID: $(APP_ID)  # This will be the secret environment variable
-  SECRET: $(SECRET)  # This will be the secret environment variable
-  TENANT_ID: $(TENANT_ID)  # This will be the secret environment variable
   azureSubscription: 'azuredevops'
   resourceGroupName: 'azure-devops-rg'
   storageAccountName: 'azuredevopsneerajsa'
