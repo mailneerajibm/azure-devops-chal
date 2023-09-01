@@ -45,7 +45,7 @@ resource cdnProfile 'Microsoft.Cdn/profiles@2020-09-01' = {
   name: 'azure-devops-cdn'
   location: 'global'
   sku: {
-    name: 'Standard_Akamai'
+    name: 'Standard_Microsoft'
   }
 }
 
