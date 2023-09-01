@@ -36,14 +36,14 @@ Describe "CDN Tests" {
 
     It "Should have correct blue origin" {
         $blueCdnEndpoint = Get-AzCdnEndpoint -ProfileName $cdnProfileName -ResourceGroupName $resourceGroupName -EndpointName "blueEndpoint"
-        Write-Output "blueCdnEndpoint: $($blueCdnEndpoint | ConvertTo-Json -Depth 3)"
-        Write-Output "blueCdnEndpoint.Origins.HostName: $($blueCdnEndpoint.Origins.HostName)"
-        $blueCdnEndpoint.Origins.HostName | Should -Be "${storageAccountName}blue.blob.core.windows.net"
+        $originHostName = $blueCdnEndpoint.Origin[0].hostName
+        $originHostName | Should -Be "${storageAccountName}blue.blob.core.windows.net"
     }
 
     It "Should have correct green origin" {
         $greenCdnEndpoint = Get-AzCdnEndpoint -ProfileName $cdnProfileName -ResourceGroupName $resourceGroupName -EndpointName "greenEndpoint"
-        $greenCdnEndpoint.Origins.HostName | Should -Be "${storageAccountName}green.blob.core.windows.net"
+        $originHostName = $greenCdnEndpoint.Origin[0].hostName
+        $originHostName | Should -Be "${storageAccountName}green.blob.core.windows.net"
     }
 }
 
