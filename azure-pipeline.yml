@@ -35,6 +35,10 @@ stages:
         scriptType: 'bash'
         scriptLocation: 'inlineScript'
         inlineScript: |
+          az storage container create \
+            --name $(containerName) \
+            --account-name $(storageAccountName) \
+            --fail-on-exist
           az storage blob upload-batch \
             --destination $(containerName) \
             --source ./azure-static-website/website/ \
