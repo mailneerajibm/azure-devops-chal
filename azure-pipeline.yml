@@ -52,5 +52,5 @@ stages:
     - powershell: Install-Module -Name Pester -Force -SkipPublisherCheck
       displayName: 'Install Pester'
     - powershell: |
-        .\infra-tests\Infrastructure.Tests.ps1 -resourceGroupName $(resourceGroupName) -storageAccountName $(storageAccountName) -cdnProfileName $(cdnProfileName)
+        .\infra-tests\Infrastructure.Test.ps1 -resourceGroupName $(resourceGroupName) -storageAccountName $(storageAccountName) -cdnProfileName $(cdnProfileName)
       displayName: 'Run Pester Tests'
