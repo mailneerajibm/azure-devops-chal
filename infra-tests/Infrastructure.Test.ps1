@@ -13,8 +13,6 @@ Describe "Storage Account Tests" {
     }
 
     It "Should have a blue deployment" {
-        Write-Output "blueCdnEndpoint: $($blueCdnEndpoint | ConvertTo-Json -Depth 3)"
-        Write-Output "blueCdnEndpoint.Origins.HostName: $($blueCdnEndpoint.Origins.HostName)"
         $blueStorageAccount = Get-AzStorageAccount -ResourceGroupName $resourceGroupName -Name "${storageAccountName}blue"
         $blueStorageAccount | Should -Not -Be $null
     }
@@ -38,6 +36,8 @@ Describe "CDN Tests" {
 
     It "Should have correct blue origin" {
         $blueCdnEndpoint = Get-AzCdnEndpoint -ProfileName $cdnProfileName -ResourceGroupName $resourceGroupName -EndpointName "blueEndpoint"
+        Write-Output "blueCdnEndpoint: $($blueCdnEndpoint | ConvertTo-Json -Depth 3)"
+        Write-Output "blueCdnEndpoint.Origins.HostName: $($blueCdnEndpoint.Origins.HostName)"
         $blueCdnEndpoint.Origins.HostName | Should -Be "${storageAccountName}blue.blob.core.windows.net"
     }
 
