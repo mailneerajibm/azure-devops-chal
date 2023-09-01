@@ -12,7 +12,7 @@ variables:
   resourceGroupName: 'azure-devops-rg'
   storageAccountName: 'azuredevopsneerajsa'
   cdnProfileName: 'azure-devops-cdn'
-  containerName: 'website'  # this variable for the container name
+  containerName: 'website'  # this is variable for the container name
 
 stages:
 - stage: 'DeployInfrastructure'
