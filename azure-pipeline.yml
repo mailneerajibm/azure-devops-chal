@@ -37,7 +37,7 @@ stages:
         inlineScript: |
           az storage blob upload-batch \
             --destination $(containerName) \
-            --source ./website \
+            --source ./azure-static-website/website/ \
             --account-name $(storageAccountName)
 
 - stage: 'RunTests'
