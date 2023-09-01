@@ -39,10 +39,31 @@ stages:
             --name $(containerName) \
             --account-name $(storageAccountName) \
             --fail-on-exist
+
           az storage blob upload-batch \
             --destination $(containerName) \
             --source ./azure-static-website/website/ \
             --account-name $(storageAccountName)
+
+          az storage container create \
+            --name $(containerName) \
+            --account-name $(storageAccountName)blue \
+            --fail-on-exist
+
+          az storage blob upload-batch \
+            --destination $(containerName) \
+            --source ./azure-static-website/website/ \
+            --account-name $(storageAccountName)blue  
+
+          az storage container create \
+            --name $(containerName) \
+            --account-name $(storageAccountName)green \
+            --fail-on-exist
+
+          az storage blob upload-batch \
+            --destination $(containerName) \
+            --source ./azure-static-website/website/ \
+            --account-name $(storageAccountName)green  
 
 - stage: 'RunTests'
   jobs:
