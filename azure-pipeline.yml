@@ -5,6 +5,12 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
+  - name: APP_ID
+    value: $(APP_ID)  # This will be the secret environment variable
+  - name: SECRET
+    value: $(SECRET)  # This will be the secret environment variable
+  - name: TENANT_ID
+    value: $(TENANT_ID)  # This will be the secret environment variable
   azureSubscription: 'azuredevops'
   resourceGroupName: 'azure-devops-rg'
   storageAccountName: 'azuredevopsneerajsa'
@@ -53,6 +59,13 @@ stages:
       displayName: 'Install Pester'
     - powershell: Install-Module -Name Az -AllowClobber -Force -SkipPublisherCheck
       displayName: 'Install Azure PowerShell Module'
+        Write-Output "APP_ID: $env:APP_ID"
+        Write-Output "SECRET: $env:SECRET"
+        Write-Output "TENANT_ID: $env:TENANT_ID"
+    
+        # Convert secret variable to secure string
+        $secureSecret = ConvertTo-SecureString -String $env:SECRET -AsPlainText -Force
+    
     - powershell: Connect-AzAccount -ServicePrincipal -Credential (New-Object PSCredential -ArgumentList $env:APP_ID, (ConvertTo-SecureString $env:SECRET -AsPlainText -Force)) -Tenant $env:TENANT_ID
       displayName: 'Connect to Azure Account'   
     - powershell: |
