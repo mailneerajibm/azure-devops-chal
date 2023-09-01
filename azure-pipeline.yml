@@ -54,5 +54,5 @@ stages:
     - powershell: Install-Module -Name Az -AllowClobber -Force -SkipPublisherCheck
       displayName: 'Install Azure PowerShell Module'
     - powershell: |
-        .\infra-tests\Infrastructure.Test.ps1 -resourceGroupName $(resourceGroupName) -storageAccountName $(storageAccountName) -cdnProfileName $(cdnProfileName) -appId $(APP_ID) -secret $(SECRET) -tenantId $(TENANT_ID)
+        .\infra-tests\Infrastructure.Test.ps1 -resourceGroupName $(resourceGroupName) -storageAccountName $(storageAccountName) -cdnProfileName $(cdnProfileName) -appId ${env:APP_ID} -secret ${env:SECRET} -tenantId ${env:TENANT_ID}
       displayName: 'Run Pester Tests'
