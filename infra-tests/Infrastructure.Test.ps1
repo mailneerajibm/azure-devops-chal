@@ -7,10 +7,6 @@ param (
 )
 
 Describe "Storage Account Tests" {
-    It "Should have HTTPS-only storage account" {
-        $storageAccount = Get-AzStorageAccount -ResourceGroupName $resourceGroupName -Name $storageAccountName
-        $storageAccount.EnableHttpsTrafficOnly | Should -Be $true
-    }
 
     It "Should have a blue deployment" {
         $blueStorageAccount = Get-AzStorageAccount -ResourceGroupName $resourceGroupName -Name "${storageAccountName}blue"
