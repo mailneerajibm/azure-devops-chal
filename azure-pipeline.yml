@@ -75,3 +75,37 @@ stages:
               fi
             displayName: 'Update Pipeline Variable'
             condition: always()  # Or specify your own condition
+
+    
+  - stage: 'ConfigureTrafficManager'
+    jobs:
+      - job: 'ConfigureTrafficManager'
+        steps:
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: $(azureSubscription)
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                az network traffic-manager profile create \
+                  --name myTrafficManagerProfile \
+                  --resource-group $(resourceGroupName) \
+                  --routing-method Priority \
+                  --unique-dns-name my-unique-dns-name \
+                  --ttl 30
+
+                if [ "${{ variables.newactiveEnvironment }}" == "blue" ]; then
+                  endpoint_name='blueEndpoint'
+                  target_resource_id='/subscriptions/{sub_id}/resourceGroups/{rg_name}/providers/Microsoft.Cdn/profiles/{profile_name}/endpoints/{endpoint_name_blue}'
+                else
+                  endpoint_name='greenEndpoint'
+                  target_resource_id='/subscriptions/{sub_id}/resourceGroups/{rg_name}/providers/Microsoft.Cdn/profiles/{profile_name}/endpoints/{endpoint_name_green}'
+                fi
+
+                az network traffic-manager endpoint create \
+                  --name $endpoint_name \
+                  --profile-name myTrafficManagerProfile \
+                  --resource-group $(resourceGroupName) \
+                  --type azureEndpoints \
+                  --target-resource-id $target_resource_id \
+                  --priority 1       
