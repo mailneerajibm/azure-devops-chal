@@ -8,8 +8,8 @@ variables:
   storageAccountName: 'azuredevopsneerajsa'
   containerName: 'website'
   newactiveEnvironment: $(activeEnvironment)
-  profile_name: myTrafficManagerProfile
-  my-unique-dns-name: azure-devops-chall
+  profile_name: 'myTrafficManagerProfile'
+  my-unique-dns-name: 'my-unique-dns-name'
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -77,7 +77,7 @@ stages:
                 az pipelines variable update --name activeEnvironment --value 'blue' --organization https://dev.azure.com/mailneerajibm --project azure-devops-challenge --pipeline-name mailneerajibm.azure-devops-chal --detect false
               fi
             displayName: 'Update Pipeline Variable'
-            condition: always()  # Or specify your own condition
+            condition: always()
 
     
   - stage: 'ConfigureTrafficManager'
