@@ -66,9 +66,9 @@ stages:
     - script: |
         az extension add --name azure-devops
         if [ "$(newactiveEnvironment)" == "blue" ]; then
-          az pipelines variable update --name activeEnvironment --value 'green' --detect
+          az pipelines variable update --name activeEnvironment --value 'green' --organization https://dev.azure.com/mailneerajibm --project azure-devops-challenge --detect
         else
-          az pipelines variable update --name activeEnvironment --value 'blue' --detect
+          az pipelines variable update --name activeEnvironment --value 'blue' --organization https://dev.azure.com/mailneerajibm --project azure-devops-challenge --detect
         fi
       displayName: 'Update Pipeline Variable'
       condition: always()  # Or specify your own condition
