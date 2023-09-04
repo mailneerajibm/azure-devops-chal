@@ -41,9 +41,9 @@ stages:
             --account-name $(storageAccountName)$(activeEnvironment) \
             --fail-on-exist
 
-          az storage blob upload-batch \
-            --destination $(containerName) \
-            --source ./azure-static-website/website/ \
+          az storage blob upload \
+            --container-name $(containerName) \
+            --file ./azure-static-website/website/index.html \
             --account-name $(storageAccountName)$(activeEnvironment) 
 
 
@@ -72,9 +72,9 @@ stages:
       displayName: 'Run Pester Tests'
         
     - script: echo '##vso[task.setvariable variable=activeEnvironment]green'
-      dispalyname: 'Toggle to green'
+      displayName: 'Toggle to green'
       condition: eq(variables['activeEnvironment'], 'blue')
 
-    - script: echo '##vso[task.setvariable variable=activeEnvironment]green'
-      dispalyname: 'Toggle to blue'
+    - script: echo '##vso[task.setvariable variable=activeEnvironment]blue'
+      displayName: 'Toggle to blue'
       condition: eq(variables['activeEnvironment'], 'green')
