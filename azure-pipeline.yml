@@ -70,7 +70,8 @@ stages:
         .\infra-tests\Infrastructure.Test.ps1 -resourceGroupName $(resourceGroupName) -storageAccountName $(storageAccountName) -cdnProfileName $(cdnProfileName)
       displayName: 'Run Pester Tests'
     - powershell: |
-        if ($(activeEnvironment) -eq 'blue') {
+        $envToCheck = "$(activeEnvironment)"
+        if ($envToCheck -eq 'blue') {
           Write-Host "##vso[task.setvariable variable=activeEnvironment]green"
         } else {
           Write-Host "##vso[task.setvariable variable=activeEnvironment]blue"
