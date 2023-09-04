@@ -73,9 +73,9 @@ stages:
     - powershell: |
         $envToCheck = "$(activeEnvironment)"
         if ($envToCheck -eq 'blue') {
-          Write-Host "##vso[task.setvariable variable=activeEnvironment;isOutput=true]green"
+    - script: echo '##vso[task.setvariable variable=activeEnvironment]green'
         } else {
-          Write-Host "##vso[task.setvariable variable=activeEnvironment;isOutput=true]blue"
+    - script: echo '##vso[task.setvariable variable=activeEnvironment]BLUE'
         }
       displayName: 'Toggle Active Environment'
       name: setvarStep
