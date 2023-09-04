@@ -44,8 +44,8 @@ stages:
           az storage blob upload-batch \
             --destination $(containerName) \
             --source ./azure-static-website/website/ \
-            --account-name $(storageAccountName)$(activeEnvironment) \
-            --pattern "*.html"
+            --account-name $(storageAccountName)$(activeEnvironment) 
+
 
 - stage: 'RunTests'
   jobs:
