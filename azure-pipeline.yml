@@ -6,7 +6,7 @@ variables:
   resourceGroupName: 'azure-devops-rg'
   storageAccountName: 'azuredevopsneerajsa'
   containerName: 'website'
-  activeEnvironment: $env:activeEnvironment
+  activeEnvironment: $(activeEnvironment)
   
 
 pool:
