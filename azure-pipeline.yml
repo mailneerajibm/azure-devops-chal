@@ -1,5 +1,5 @@
 trigger:
-- main
+  - main
 
 variables:
   azureSubscription: 'azuredevops'
@@ -12,67 +12,66 @@ pool:
   vmImage: 'ubuntu-latest'
 
 stages:
-- stage: 'DeployInfrastructure'
-  jobs:
-  - job: 'Deploy'
-    steps:
-    - checkout: self
-    - task: AzureCLI@2
-      inputs:
-        azureSubscription: $(azureSubscription)
-        scriptType: 'bash'
-        scriptLocation: 'inlineScript'
-        inlineScript: |
-          az deployment group create --resource-group $(resourceGroupName) --template-file ./azure-static-website/main.bicep --parameters storageAccountName=$(storageAccountName)
+  - stage: 'DeployInfrastructure'
+    jobs:
+      - job: 'Deploy'
+        steps:
+          - checkout: self
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: $(azureSubscription)
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                az deployment group create --resource-group $(resourceGroupName) --template-file ./azure-static-website/main.bicep --parameters storageAccountName=$(storageAccountName)
 
-- stage: 'DeployWebsite'
-  jobs:
-  - job: 'DeployWebsite'
-    steps:
-    - task: AzureCLI@2
-      inputs:
-        azureSubscription: $(azureSubscription)
-        scriptType: 'bash'
-        scriptLocation: 'inlineScript'
-        inlineScript: |
-          az storage container create \
-            --name $env:containerName \
-            --account-name $(storageAccountName)$(newactiveEnvironment) \
-            --fail-on-exist
+  - stage: 'DeployWebsite'
+    jobs:
+      - job: 'DeployWebsite'
+        steps:
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: $(azureSubscription)
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                az storage container create \
+                  --name $env:containerName \
+                  --account-name $(storageAccountName)$(newactiveEnvironment) \
+                  --fail-on-exist
 
-          az storage blob upload --overwrite \
-            --container-name $(containerName) \
-            --file ./azure-static-website/website/index.html \
-            --account-name $(storageAccountName)$(newactiveEnvironment) 
+                az storage blob upload --overwrite \
+                  --container-name $(containerName) \
+                  --file ./azure-static-website/website/index.html \
+                  --account-name $(storageAccountName)$(newactiveEnvironment)
 
-- stage: 'RunTests'
-  jobs:
-  - job: 'RunPesterTests'
-    steps:
-    - checkout: self
-    - powershell: Install-Module -Name Pester -Force -SkipPublisherCheck
-      displayName: 'Install Pester'
-    - powershell: Install-Module -Name Az -AllowClobber -Force -SkipPublisherCheck
-      displayName: 'Install Azure PowerShell Module'
-    - powershell: |
-        $secureSecret = ConvertTo-SecureString -String $env:SECRET -AsPlainText -Force
-        $psCredential = New-Object PSCredential -ArgumentList $env:APP_ID, $secureSecret
-        Connect-AzAccount -ServicePrincipal -Credential $psCredential -Tenant $env:TENANT_ID
-      displayName: 'Connect to Azure Account'   
-    - powershell: |
-        .\infra-tests\Infrastructure.Test.ps1 -resourceGroupName $(resourceGroupName) -storageAccountName $(storageAccountName) -cdnProfileName $(cdnProfileName)
-      displayName: 'Run Pester Tests'
-
-    - script: echo $(AzureDevOpsPAT) | az devops login
-      displayName: 'Azure DevOps Login'
-      env:
-        AZURE_DEVOPS_EXT_PAT: $(AzureDevOpsPAT)    
-    - script: |
-        az extension add --name azure-devops
-        if [ "$(newactiveEnvironment)" == "blue" ]; then
-          az pipelines variable update --name activeEnvironment --value 'green' --organization https://dev.azure.com/mailneerajibm --project azure-devops-challenge --pipeline-name azure-devops-chal --detect false
-        else
-          az pipelines variable update --name activeEnvironment --value 'blue' --organization https://dev.azure.com/mailneerajibm --project azure-devops-challenge --pipeline-name azure-devops-chal --detect false
-        fi
-      displayName: 'Update Pipeline Variable'
-      condition: always()  # Or specify your own condition
+  - stage: 'RunTests'
+    jobs:
+      - job: 'RunPesterTests'
+        steps:
+          - checkout: self
+          - powershell: Install-Module -Name Pester -Force -SkipPublisherCheck
+            displayName: 'Install Pester'
+          - powershell: Install-Module -Name Az -AllowClobber -Force -SkipPublisherCheck
+            displayName: 'Install Azure PowerShell Module'
+          - powershell: |
+              $secureSecret = ConvertTo-SecureString -String $env:SECRET -AsPlainText -Force
+              $psCredential = New-Object PSCredential -ArgumentList $env:APP_ID, $secureSecret
+              Connect-AzAccount -ServicePrincipal -Credential $psCredential -Tenant $env:TENANT_ID
+            displayName: 'Connect to Azure Account'   
+          - powershell: |
+              .\infra-tests\Infrastructure.Test.ps1 -resourceGroupName $(resourceGroupName) -storageAccountName $(storageAccountName) -cdnProfileName $(cdnProfileName)
+            displayName: 'Run Pester Tests'
+          - script: echo $(AzureDevOpsPAT) | az devops login
+            displayName: 'Azure DevOps Login'
+            env:
+              AZURE_DEVOPS_EXT_PAT: $(AzureDevOpsPAT)
+          - script: |
+              az extension add --name azure-devops
+              if [ "${{ variables.newactiveEnvironment }}" == "blue" ]; then
+                az pipelines variable update --name activeEnvironment --value 'green' --organization https://dev.azure.com/mailneerajibm --project azure-devops-challenge --pipeline-name mailneerajibm.azure-devops-chal --detect false
+              else
+                az pipelines variable update --name activeEnvironment --value 'blue' --organization https://dev.azure.com/mailneerajibm --project azure-devops-challenge --pipeline-name mailneerajibm.azure-devops-chal --detect false
+              fi
+            displayName: 'Update Pipeline Variable'
+            condition: always()  # Or specify your own condition
