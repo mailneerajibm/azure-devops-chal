@@ -6,6 +6,7 @@ variables:
   subscriptionid: $(subscription_id)
   resourceGroupName: 'azure-devops-rg'
   storageAccountName: 'azuredevopsneerajsa'
+  cdnProfileName: 'azure-devops-cdn'
   containerName: 'website'
   newactiveEnvironment: $(activeEnvironment)
   
@@ -90,6 +91,7 @@ stages:
               scriptLocation: 'inlineScript'
               inlineScript: |
                profile_name='myTrafficManagerProfile'
+               cdnProfileName='azure-devops-cdn'
                dns_name='my-unique-dns-name'
                subid=$(subscriptionid)
                resourceGroupName='azure-devops-rg'
@@ -103,10 +105,10 @@ stages:
 
                 if [ "${{ variables.newactiveEnvironment }}" == "blue" ]; then
                   endpoint_name='blueEndpoint'
-                  target_resource_id="/subscriptions/$subid/resourceGroups/$resourceGroupName/providers/Microsoft.Cdn/profiles/$profile_name/endpoints/$endpoint_name"
+                  target_resource_id="/subscriptions/$subid/resourcegroups/$resourceGroupName/providers/Microsoft.Cdn/profiles/$cdnProfileName/endpoints/$endpoint_name"
                 else
                   endpoint_name='greenEndpoint'
-                  target_resource_id="/subscriptions/$subid/resourceGroups/$resourceGroupName/providers/Microsoft.Cdn/profiles/$profile_name/endpoints/$endpoint_name"
+                  target_resource_id="/subscriptions/$subid/resourcegroups/$resourceGroupName/providers/Microsoft.Cdn/profiles/$cdnProfileName/endpoints/$endpoint_name"
                 fi
                 
                 echo $target_resource_id
