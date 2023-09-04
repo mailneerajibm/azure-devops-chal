@@ -70,12 +70,11 @@ stages:
     - powershell: |
         .\infra-tests\Infrastructure.Test.ps1 -resourceGroupName $(resourceGroupName) -storageAccountName $(storageAccountName) -cdnProfileName $(cdnProfileName)
       displayName: 'Run Pester Tests'
-    - powershell: |
-        $envToCheck = "$(activeEnvironment)"
-        if ($envToCheck -eq 'blue') {
+        
     - script: echo '##vso[task.setvariable variable=activeEnvironment]green'
-        } else {
-    - script: echo '##vso[task.setvariable variable=activeEnvironment]BLUE'
-        }
-      displayName: 'Toggle Active Environment'
-      name: setvarStep
+      dispalyname: 'Toggle to green'
+      condition: eq(variables['activeEnvironment'], 'blue')
+
+    - script: echo '##vso[task.setvariable variable=activeEnvironment]green'
+      dispalyname: 'Toggle to blue'
+      condition: eq(variables['activeEnvironment'], 'green')
