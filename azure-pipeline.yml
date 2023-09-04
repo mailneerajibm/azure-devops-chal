@@ -30,7 +30,6 @@ stages:
   jobs:
   - job: 'DeployWebsite'
     steps:
-    - script: echo "Active environment is: $(activeEnvironment)"
     - task: AzureCLI@2
       inputs:
         azureSubscription: $(azureSubscription)
