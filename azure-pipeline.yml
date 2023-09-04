@@ -10,6 +10,7 @@ variables:
   storageAccountName: 'azuredevopsneerajsa'
   cdnProfileName: 'azure-devops-cdn'
   containerName: 'website'  # this is variable for the container name
+  activeEnvironment: 'blue' # Initialize to 'blue' or 'green'
 
 stages:
 - stage: 'DeployInfrastructure'
@@ -29,6 +30,7 @@ stages:
   jobs:
   - job: 'DeployWebsite'
     steps:
+    - script: echo "Active environment is: $(activeEnvironment)"
     - task: AzureCLI@2
       inputs:
         azureSubscription: $(azureSubscription)
@@ -37,33 +39,14 @@ stages:
         inlineScript: |
           az storage container create \
             --name $(containerName) \
-            --account-name $(storageAccountName) \
+            --account-name $(storageAccountName)$(activeEnvironment) \
             --fail-on-exist
 
           az storage blob upload-batch \
             --destination $(containerName) \
             --source ./azure-static-website/website/ \
-            --account-name $(storageAccountName)
+            --account-name $(storageAccountName)$(activeEnvironment)
 
-          az storage container create \
-            --name $(containerName) \
-            --account-name $(storageAccountName)blue \
-            --fail-on-exist
-
-          az storage blob upload-batch \
-            --destination $(containerName) \
-            --source ./azure-static-website/website/ \
-            --account-name $(storageAccountName)blue  
-
-          az storage container create \
-            --name $(containerName) \
-            --account-name $(storageAccountName)green \
-            --fail-on-exist
-
-          az storage blob upload-batch \
-            --destination $(containerName) \
-            --source ./azure-static-website/website/ \
-            --account-name $(storageAccountName)green  
 
 - stage: 'RunTests'
   jobs:
@@ -88,3 +71,10 @@ stages:
     - powershell: |
         .\infra-tests\Infrastructure.Test.ps1 -resourceGroupName $(resourceGroupName) -storageAccountName $(storageAccountName) -cdnProfileName $(cdnProfileName)
       displayName: 'Run Pester Tests'
+        - powershell: |
+        if ($(activeEnvironment) -eq 'blue') {
+          Write-Host "##vso[task.setvariable variable=activeEnvironment]green"
+        } else {
+          Write-Host "##vso[task.setvariable variable=activeEnvironment]blue"
+        }
+      displayName: 'Toggle Active Environment'  
