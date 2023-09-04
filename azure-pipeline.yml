@@ -47,7 +47,6 @@ stages:
             --source ./azure-static-website/website/ \
             --account-name $(storageAccountName)$(activeEnvironment)
 
-
 - stage: 'RunTests'
   jobs:
   - job: 'RunPesterTests'
@@ -77,4 +76,4 @@ stages:
         } else {
           Write-Host "##vso[task.setvariable variable=activeEnvironment]blue"
         }
-      displayName: 'Toggle Active Environment'  
+      displayName: 'Toggle Active Environment'
