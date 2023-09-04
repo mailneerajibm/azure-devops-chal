@@ -103,10 +103,10 @@ stages:
 
                 if [ "${{ variables.newactiveEnvironment }}" == "blue" ]; then
                   endpoint_name='blueEndpoint'
-                  target_resource_id='/subscriptions/{subid}/resourceGroups/${resourceGroupName}/providers/Microsoft.Cdn/profiles/{profile_name}endpoints/{endpoint_name}'
+                  target_resource_id='/subscriptions/$subid/resourceGroups/$resourceGroupName/providers/Microsoft.Cdn/profiles/$profile_name/endpoints/$endpoint_name'
                 else
                   endpoint_name='greenEndpoint'
-                  target_resource_id='/subscriptions/{subid}/resourceGroups/${resourceGroupName}/providers/Microsoft.Cdn/profiles/{profile_name}endpoints/{endpoint_name}'
+                  target_resource_id='/subscriptions/$subid/resourceGroups/$resourceGroupName/providers/Microsoft.Cdn/profiles/$profile_name/endpoints/$endpoint_name'
                 fi
                 
                 echo $target_resource_id
