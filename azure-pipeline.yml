@@ -44,7 +44,7 @@ stages:
             --destination $(containerName) \
             --source ./azure-static-website/website/ \
             --account-name $(storageAccountName)$(activeEnvironment)/ \
-            --pattern *
+            --pattern "*.html"
 
 - stage: 'RunTests'
   jobs:
