@@ -6,6 +6,7 @@ variables:
   resourceGroupName: 'azure-devops-rg'
   storageAccountName: 'azuredevopsneerajsa'
   containerName: 'website'
+  activeEnvironment: $env:activeEnvironment
   
 
 pool:
@@ -37,13 +38,13 @@ stages:
         inlineScript: |
           az storage container create \
             --name $env:containerName \
-            --account-name $(storageAccountName)$env:activeEnvironment \
+            --account-name $(storageAccountName)$(activeEnvironment) \
             --fail-on-exist
 
           az storage blob upload --overwrite \
             --container-name $(containerName) \
             --file ./azure-static-website/website/index.html \
-            --account-name $(storageAccountName)$env:activeEnvironment 
+            --account-name $(storageAccountName)$(activeEnvironment) 
 
 
 - stage: 'RunTests'
@@ -64,6 +65,6 @@ stages:
         .\infra-tests\Infrastructure.Test.ps1 -resourceGroupName $(resourceGroupName) -storageAccountName $(storageAccountName) -cdnProfileName $(cdnProfileName)
       displayName: 'Run Pester Tests'
         
-    - script: echo '##vso[task.setvariable variable=$env.activeEnvironment]green'
+    - script: echo '##vso[task.setvariable variable=activeEnvironment]green'
       displayName: 'Toggle to green'
-      condition: eq(variables['$env:activeEnvironment'], 'blue')
+      condition: eq(variables['activeEnvironment'], 'blue')
