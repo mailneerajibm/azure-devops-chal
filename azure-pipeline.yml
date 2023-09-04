@@ -1,6 +1,9 @@
 trigger:
 - main
 
+variable:
+  azureSubscription: 'azuredevops' 
+
 pool:
   vmImage: 'ubuntu-latest'
 
@@ -12,7 +15,7 @@ stages:
     - checkout: self
     - task: AzureCLI@2
       inputs:
-        azureSubscription: $env:azureSubscription
+        azureSubscription: $(azureSubscription)
         scriptType: 'bash'
         scriptLocation: 'inlineScript'
         inlineScript: |
@@ -24,7 +27,7 @@ stages:
     steps:
     - task: AzureCLI@2
       inputs:
-        azureSubscription: $env:azureSubscription
+        azureSubscription: $(azureSubscription)
         scriptType: 'bash'
         scriptLocation: 'inlineScript'
         inlineScript: |
