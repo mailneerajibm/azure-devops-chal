@@ -9,7 +9,11 @@ variables:
   containerName: 'website'
   newactiveEnvironment: $(activeEnvironment)
   profile_name: 'myTrafficManagerProfile'
-  my-unique-dns-name: 'my-unique-dns-name'
+  dns-name: 'my-unique-dns-name'
+  bendpoint_name: 'blueEndpoint'
+  gendpoint_name: 'greenEndpoint'
+
+  
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -90,25 +94,26 @@ stages:
               scriptType: 'bash'
               scriptLocation: 'inlineScript'
               inlineScript: |
+                
                 az network traffic-manager profile create \
                   --name $(profile_name) \
                   --resource-group $(resourceGroupName) \
                   --routing-method Priority \
-                  --unique-dns-name $(my-unique-dns-name) \
+                  --unique-dns-name $(dns-name) \
                   --ttl 30
 
                 if [ "${{ variables.newactiveEnvironment }}" == "blue" ]; then
                   endpoint_name='blueEndpoint'
-                  target_resource_id='/subscriptions/{sub_id}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cdn/profiles/{profile_name}/endpoints/{endpoint_name}'
+                  target_resource_id='/subscriptions/${{ variables.subid }}/resourceGroups/${{ variables.resourceGroupName }}/providers/Microsoft.Cdn/profiles/${{ variables.profile_name }}endpoints/${{ variables.bendpoint_name }}'
                 else
                   endpoint_name='greenEndpoint'
-                  target_resource_id='/subscriptions/{sub_id}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cdn/profiles/{profile_name}/endpoints/{endpoint_name}'
+                  target_resource_id='/subscriptions/${{ variables.subid }}/resourceGroups/${{ variables.resourceGroupName }}/providers/Microsoft.Cdn/profiles/${{ variables.profile_name }}/endpoints/${{ variables.gendpoint_name }}'
                 fi
 
                 az network traffic-manager endpoint create \
                   --name $endpoint_name \
-                  --profile-name $profile_name \
-                  --resource-group $resourceGroupName \
+                  --profile-name $(profile_name) \
+                  --resource-group $(resourceGroupName) \
                   --type azureEndpoints \
                   --target-resource-id $target_resource_id \
                   --endpoint-status Enabled \
