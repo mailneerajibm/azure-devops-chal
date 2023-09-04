@@ -106,9 +106,10 @@ stages:
                 fi
 
                 az network traffic-manager endpoint create \
-                  --name $(endpoint_name) \
-                  --profile-name $(profile_name) \
-                  --resource-group $(resourceGroupName) \
+                  --name $endpoint_name \
+                  --profile-name $profile_name \
+                  --resource-group $resourceGroupName \
                   --type azureEndpoints \
-                  --target-resource-id $(target_resource_id) \
+                  --target-resource-id $target_resource_id \
+                  --endpoint-status Enabled \
                   --priority 1       
