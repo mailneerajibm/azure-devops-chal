@@ -62,7 +62,11 @@ stages:
     - powershell: |
         .\infra-tests\Infrastructure.Test.ps1 -resourceGroupName $(resourceGroupName) -storageAccountName $(storageAccountName) -cdnProfileName $(cdnProfileName)
       displayName: 'Run Pester Tests'
-        
+
+    - script: echo $(AzureDevOpsPAT) | az devops login
+      displayName: 'Azure DevOps Login'
+      env:
+        AZURE_DEVOPS_EXT_PAT: $(AzureDevOpsPAT)    
     - script: |
         az extension add --name azure-devops
         if [ "$(newactiveEnvironment)" == "blue" ]; then
