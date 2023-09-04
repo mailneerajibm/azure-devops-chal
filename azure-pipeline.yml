@@ -90,15 +90,15 @@ stages:
               scriptLocation: 'inlineScript'
               inlineScript: |
                profile_name='myTrafficManagerProfile'
-               dns-name='my-unique-dns-name'
+               dns_name='my-unique-dns-name'
                subid=$(subscriptionid)
-               resourceGroupName=azure-devops-rg
+               resourceGroupName='azure-devops-rg'
                 
                 az network traffic-manager profile create \
                   --name $profile_name \
                   --resource-group $resourceGroupName \
                   --routing-method Priority \
-                  --unique-dns-name $dns-name \
+                  --unique-dns-name $dns_name \
                   --ttl 30
 
                 if [ "${{ variables.newactiveEnvironment }}" == "blue" ]; then
