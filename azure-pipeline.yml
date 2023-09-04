@@ -39,7 +39,6 @@ stages:
           az storage container create \
             --name $(containerName) \
             --account-name $(storageAccountName)$(activeEnvironment) \
-            --fail-on-exist
 
           az storage blob upload-batch \
             --destination $(containerName) \
@@ -73,8 +72,9 @@ stages:
     - powershell: |
         $envToCheck = "$(activeEnvironment)"
         if ($envToCheck -eq 'blue') {
-          Write-Host "##vso[task.setvariable variable=activeEnvironment]green"
+          Write-Host "##vso[task.setvariable variable=activeEnvironment;isOutput=true]green"
         } else {
-          Write-Host "##vso[task.setvariable variable=activeEnvironment]blue"
+          Write-Host "##vso[task.setvariable variable=activeEnvironment;isOutput=true]blue"
         }
       displayName: 'Toggle Active Environment'
+      name: setvarStep
