@@ -79,4 +79,3 @@ stages:
         }
       displayName: 'Toggle Active Environment'
       name: setvarStep
-    - script: echo "Active environment after toggle: $(setvarStep.activeEnvironment)"
