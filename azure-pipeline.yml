@@ -96,10 +96,10 @@ stages:
 
                 if [ "${{ variables.newactiveEnvironment }}" == "blue" ]; then
                   endpoint_name='blueEndpoint'
-                  target_resource_id='/subscriptions/{sub_id}/resourceGroups/{rg_name}/providers/Microsoft.Cdn/profiles/{profile_name}/endpoints/{endpoint_name_blue}'
+                  target_resource_id='/subscriptions/{sub_id}/resourceGroups/{rg_name}/providers/Microsoft.Cdn/profiles/{profile_name}/endpoints/{endpoint_name}'
                 else
                   endpoint_name='greenEndpoint'
-                  target_resource_id='/subscriptions/{sub_id}/resourceGroups/{rg_name}/providers/Microsoft.Cdn/profiles/{profile_name}/endpoints/{endpoint_name_green}'
+                  target_resource_id='/subscriptions/{sub_id}/resourceGroups/{rg_name}/providers/Microsoft.Cdn/profiles/{profile_name}/endpoints/{endpoint_name}'
                 fi
 
                 az network traffic-manager endpoint create \
