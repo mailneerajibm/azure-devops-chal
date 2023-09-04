@@ -41,7 +41,7 @@ stages:
             --account-name $(storageAccountName)$(activeEnvironment) \
             --fail-on-exist
 
-          az storage blob upload \
+          az storage blob upload --overwrite \
             --container-name $(containerName) \
             --file ./azure-static-website/website/index.html \
             --account-name $(storageAccountName)$(activeEnvironment) 
