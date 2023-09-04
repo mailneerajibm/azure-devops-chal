@@ -3,10 +3,13 @@ trigger:
 
 variables:
   azureSubscription: 'azuredevops'
+  subid: $(subscription_id)
   resourceGroupName: 'azure-devops-rg'
   storageAccountName: 'azuredevopsneerajsa'
   containerName: 'website'
   newactiveEnvironment: $(activeEnvironment)
+  profile_name: myTrafficManagerProfile
+  my-unique-dns-name: azure-devops-chall
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -88,24 +91,24 @@ stages:
               scriptLocation: 'inlineScript'
               inlineScript: |
                 az network traffic-manager profile create \
-                  --name myTrafficManagerProfile \
+                  --name $(profile_name) \
                   --resource-group $(resourceGroupName) \
                   --routing-method Priority \
-                  --unique-dns-name my-unique-dns-name \
+                  --unique-dns-name $(my-unique-dns-name) \
                   --ttl 30
 
                 if [ "${{ variables.newactiveEnvironment }}" == "blue" ]; then
                   endpoint_name='blueEndpoint'
-                  target_resource_id='/subscriptions/{sub_id}/resourceGroups/{rg_name}/providers/Microsoft.Cdn/profiles/{profile_name}/endpoints/{endpoint_name}'
+                  target_resource_id='/subscriptions/{sub_id}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cdn/profiles/{profile_name}/endpoints/{endpoint_name}'
                 else
                   endpoint_name='greenEndpoint'
-                  target_resource_id='/subscriptions/{sub_id}/resourceGroups/{rg_name}/providers/Microsoft.Cdn/profiles/{profile_name}/endpoints/{endpoint_name}'
+                  target_resource_id='/subscriptions/{sub_id}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cdn/profiles/{profile_name}/endpoints/{endpoint_name}'
                 fi
 
                 az network traffic-manager endpoint create \
-                  --name $endpoint_name \
-                  --profile-name myTrafficManagerProfile \
+                  --name $(endpoint_name) \
+                  --profile-name $(profile_name) \
                   --resource-group $(resourceGroupName) \
                   --type azureEndpoints \
-                  --target-resource-id $target_resource_id \
+                  --target-resource-id $(target_resource_id) \
                   --priority 1       
